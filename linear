@@ -1,0 +1,35 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import sklearn.datasets
+from sklearn.model_selection import train_test_split
+from xgboost import XGBRegressor
+from sklearn import metrics
+
+df= pd.read_csv("boston.csv")
+df.isnull()
+df.describe()
+correlation=df.corr()
+
+plt.figure(figsize=(10,10))
+sns.heatmap(correlation , cbar=True , square=True , fmt='-1f', annot=True , annot_kws={'size':8} , cmap='Blues')
+
+X = df.drop(['medv'] , axis=1)
+Y = df['medv']
+print(X)
+print(Y)
+
+X_train, X_test, Y_train, Y_test = train_test_split(X , Y , test_size= 0.2 , random_state = 2)
+print(X.shape , X_train.shape , X_test.shape)
+
+model = XGBRegressor()
+model.fit(X_train, Y_train)
+
+training_data_pre = model.predict(X_train)
+plt.scatter(Y_train , training_data_pre)
+plt.xlabel("actual")
+plt.ylabel("predicted")
+plt.title("price")
+plt.show()
+
